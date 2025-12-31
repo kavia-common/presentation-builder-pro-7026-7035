@@ -1,48 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import "./App.css";
+import Navbar from "./components/Navbar";
+import TemplateSidebar from "./components/TemplateSidebar";
+import PromptForm from "./components/PromptForm";
+import PreviewPane from "./components/PreviewPane";
+import ActionPanel from "./components/ActionPanel";
+import { PresentationProvider } from "./context/PresentationContext";
 
 // PUBLIC_INTERFACE
 function App() {
-  const [theme, setTheme] = useState('light');
+  /** Main application entry for the PPT generator UI (navbar + sidebar + main + actions). */
 
-  // Effect to apply theme to document element
+  // Keep any existing theme attribute stable (template previously used data-theme).
+  // This app is designed for the light "Ocean Professional" theme by default.
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
-
-  // PUBLIC_INTERFACE
-  const toggleTheme = () => {
-    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
-  };
+    document.documentElement.setAttribute("data-theme", "light");
+  }, []);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <button 
-          className="theme-toggle" 
-          onClick={toggleTheme}
-          aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-        >
-          {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
-        </button>
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p>
-          Current theme: <strong>{theme}</strong>
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <PresentationProvider>
+      <div className="pp-app">
+        <Navbar />
+
+        <div className="pp-shell">
+          <TemplateSidebar />
+
+          <main className="pp-main" aria-label="Main content">
+            <div className="pp-mainGrid">
+              <div className="pp-mainCol">
+                <PromptForm />
+                <PreviewPane />
+              </div>
+              <ActionPanel />
+            </div>
+          </main>
+        </div>
+      </div>
+    </PresentationProvider>
   );
 }
 
